@@ -6,4 +6,5 @@ require (
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/mutecomm/go-sqlcipher/v4 v4.4.0
 	github.com/pkg/errors v0.9.1
+	github.com/spf13/cobra v1.1.1
 )

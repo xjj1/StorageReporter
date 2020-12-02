@@ -10,7 +10,7 @@ import (
 
 const fname = "data.db"
 
-func InitDB() (*sql.DB, error) {
+func InitDB() (*Repository, error) {
 	var err error
 	key := "2DD29CA851E7B56E4697B0E1F08507293D761A05CE4D1B628663F411A8086D99"
 	dbname := fmt.Sprintf("%s?_pragma_key=x'%s'&_pragma_cipher_page_size=4096", fname, key)
@@ -20,11 +20,13 @@ func InitDB() (*sql.DB, error) {
 	}
 	DBCon.SetMaxIdleConns(100)
 
+	// Name = ip address or fqdn
+	// FriendlyName = if fqdn is not configured we need some kind of readable name
 	sqlStmt := `create table if not exists Arrays (
 		ArrayType integer,
 		Cluster varchar(1024),
 		Name varchar(1024),
-		Friendlyname varchar(1024),
+		FriendlyName varchar(1024),
 		Username varchar(1024),
 		Password varchar(1024)
 	);`
@@ -65,5 +67,7 @@ func InitDB() (*sql.DB, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("%q: %s\n", err, sqlStmt))
 	}
-	return DBCon, nil
+	return &Repository{
+		DBCon,
+	}, nil
 }
