@@ -14,14 +14,14 @@ const VERSION = "1.3"
 const GBsize = 1024
 
 func main() {
-	DB, err := db.InitDB()
+	repo, err := db.InitSQLiteRepo()
 	if err != nil {
 		log.Fatalln("init db:", err)
 	}
-	app := cmd.NewApp(DB)
+	defer repo.Close()
+	app := cmd.NewApp(repo)
 	err = app.Execute()
 	if err != nil {
 		log.Println(err)
 	}
-	defer DB.Close()
 }
