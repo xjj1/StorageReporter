@@ -1,15 +1,12 @@
 package cmd
 
 import (
-
-	//"os"
-
-	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/xjj1/StorageReporter/db"
 )
@@ -90,8 +87,12 @@ func NewEmailCmd(r *db.Repository) *cobra.Command {
 				return errors.New("error in args")
 			}
 			x := strings.Split(args[0], ",")
-			fmt.Println("adding email ", x)
-			r.AddEmail(x) // dbops.go
+			// dbops.go
+			if err := r.AddEmail(x); err != nil {
+				return errors.Wrap(err, "add email")
+			}
+			fmt.Println("added email ", x)
+
 			return nil
 		},
 	}
