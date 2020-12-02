@@ -7,9 +7,6 @@ import (
 	"github.com/xjj1/StorageReporter/db"
 )
 
-// VERSION contains the program version
-const VERSION = "1.3"
-
 // GBsize could be 1000
 const GBsize = 1024
 
@@ -19,8 +16,8 @@ func main() {
 		log.Fatalln("init db:", err)
 	}
 	defer repo.Close()
-	app := cmd.NewApp(repo)
-	err = app.Execute()
+
+	err = cmd.NewApp(repo).Execute()
 	if err != nil {
 		log.Println(err)
 	}
