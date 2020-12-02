@@ -7,7 +7,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (r *Repository) AddEmail(param []string) error {
+func (r *Repository) AddEmailSettings(param []string) error {
 	if len(param) < 2 {
 		return errors.New("Please specify at least recipient and mailserver!")
 	}
@@ -63,9 +63,6 @@ func (r *Repository) GetEmail() (*Email, error) {
 	var m Email
 	for rows.Next() {
 		_ = rows.Scan(&m.Rcptto, &m.Mailserver, &m.Mailfrom, &m.Subject, &m.Username, &m.Password)
-		// if err != nil {
-		// 	return nil, errors.Wrap(err, "select email scan result")
-		// }
 	}
 	err = rows.Err()
 	if err != nil {
@@ -74,10 +71,9 @@ func (r *Repository) GetEmail() (*Email, error) {
 	return &m, nil
 }
 
-var emailRegex = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
-
 // isEmailValid checks if the email provided passes the required structure and length.
 func isEmailValid(e string) bool {
+	var emailRegex = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 	if len(e) < 3 && len(e) > 254 {
 		return false
 	}
