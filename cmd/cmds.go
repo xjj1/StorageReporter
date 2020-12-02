@@ -17,7 +17,6 @@ import (
 var selfName string
 
 type App struct {
-	r *db.Repository
 	c *cobra.Command
 }
 
@@ -35,7 +34,7 @@ func NewApp(r *db.Repository) *App {
 	c := NewRootCmd()
 	c.AddCommand(NewEmailCmd(r))
 	c.AddCommand(NewListCmd(r))
-	return &App{r, c}
+	return &App{c}
 }
 
 func NewRootCmd() *cobra.Command {
