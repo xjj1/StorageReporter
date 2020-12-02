@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/xjj1/StorageReporter/db"
@@ -14,7 +13,6 @@ const VERSION = "1.3"
 const GBsize = 1024
 
 func main() {
-	fmt.Println("test")
 	DB, err := db.InitDB()
 	if err != nil {
 		log.Fatalln("init db:", err)

@@ -35,12 +35,12 @@ func InitDB() (*sql.DB, error) {
 	}
 
 	sqlStmt = `create table if not exists email (
-		rcpt_to varchar(1024),
-		mailserver varchar(1024),
-		mailfrom varchar(1024),
-		subject varchar(1024),
-		username varchar(1024),
-		password varchar(1024)
+		RcptTo varchar(1024),
+		MailServer varchar(1024),
+		MailFrom varchar(1024),
+		Subject varchar(1024),
+		Username varchar(1024),
+		Password varchar(1024)
 	);`
 
 	if _, err = DBCon.Exec(sqlStmt); err != nil {
@@ -49,15 +49,15 @@ func InitDB() (*sql.DB, error) {
 	}
 
 	sqlStmt = `create table if not exists history (
-		datetime integer,
-		array varchar(1024),
-		disktype varchar(3),
-		allsize integer,
-		freesize integer,
-		est_free_size integer,
-		used_perc integer,
-		snapshots integer,
-		presented_size integer
+		Datetime integer,
+		Array varchar(1024),
+		Disktype varchar(3),
+		Allsize integer,
+		Freesize integer,
+		EstFreeSize integer,
+		UsedPerc float,
+		Snapshots integer,
+		PresentedSize integer
 	);
 	`
 
