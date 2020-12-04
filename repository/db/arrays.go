@@ -2,11 +2,17 @@ package db
 
 import (
 	"github.com/pkg/errors"
+	"github.com/xjj1/StorageReporter/arrays"
 	"github.com/xjj1/StorageReporter/devices"
 )
 
-func (r *repo) AddArray(a *devices.Device) error {
-	_, err := r.db.Exec(`insert into Arrays(
+func (r *repo) AddArray(a devices.Device) error {
+	var err error
+	a.Type, err = arrays.AutoDetect(a)
+	if err != nil {
+		return errors.New("Cannot autodetect / unknown array")
+	}
+	_, err = r.db.Exec(`insert into Arrays(
 		ArrayType,
 		Cluster,
 		Name,

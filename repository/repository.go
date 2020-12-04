@@ -7,7 +7,7 @@ type Email struct {
 }
 
 type Repository interface {
-	AddArray(a *devices.Device) error
+	AddArray(a devices.Device) error
 	AddEmailSettings(param []string) error
 	GetEmail() (*Email, error)
 	Close()

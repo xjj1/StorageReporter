@@ -158,10 +158,8 @@ func newAddArrayCmd(r repository.Repository) *cobra.Command {
 			}
 			//fmt.Println("add called with args : ", Name, Friendlyname, Username, Password, err)
 
-			// dbops.go
-			err = r.AddArray(&a)
+			err = r.AddArray(a)
 			if err != nil {
-				//fmt.Println("err= ", err)
 				return err
 			}
 			log.Println(a.String(), "Added")
