@@ -19,14 +19,12 @@ type MySSH struct {
 func NewSSH(a *devices.Device) (MySSH, error) {
 	log.Printf("Connecting to %s", a.Name)
 	arr_ip := fmt.Sprintf("%s:22", a.Name)
-
 	cfg := ssh.Config{}
 	cfg.SetDefaults()
 	cfg.KeyExchanges = append(cfg.KeyExchanges,
 		"diffie-hellman-group-exchange-sha256",
 		"diffie-hellman-group-exchange-sha1",
 	)
-
 	config := &ssh.ClientConfig{
 		User: a.Username,
 		Auth: []ssh.AuthMethod{
@@ -44,18 +42,16 @@ func NewSSH(a *devices.Device) (MySSH, error) {
 	return MySSH{client, a.Name}, nil
 }
 
-// needs question/annswer SSH connection to the Nimbles
+// needs question/answer SSH connection to the Nimbles
 func NewSSHNimble(a *devices.Device) (MySSH, error) {
 	log.Printf("Connecting to %s", a.Name)
 	arr_ip := fmt.Sprintf("%s:22", a.Name)
-
 	cfg := ssh.Config{}
 	cfg.SetDefaults()
 	cfg.KeyExchanges = append(cfg.KeyExchanges,
 		"diffie-hellman-group-exchange-sha256",
 		"diffie-hellman-group-exchange-sha1",
 	)
-
 	config := &ssh.ClientConfig{
 		User: a.Username,
 		Auth: []ssh.AuthMethod{
@@ -72,11 +68,6 @@ func NewSSHNimble(a *devices.Device) (MySSH, error) {
 		Timeout:         5 * time.Minute,
 		Config:          cfg,
 	}
-	// config.KeyExchanges = append(
-	// 	config.KeyExchanges,
-	// 	"diffie-hellman-group-exchange-sha256",
-	// 	"diffie-hellman-group-exchange-sha1",
-	// )
 	client, err := ssh.Dial("tcp", arr_ip, config)
 	if err != nil {
 		log.Printf("Error connecting to %s : %v", a.Name, err)
@@ -85,7 +76,7 @@ func NewSSHNimble(a *devices.Device) (MySSH, error) {
 	return MySSH{client, a.Name}, nil
 }
 
-func (c *MySSH) ExecCmd(cmd string) (string, error) {
+func (c MySSH) ExecCmd(cmd string) (string, error) {
 	var session *ssh.Session
 	var b bytes.Buffer
 	session, err := c.NewSession()
