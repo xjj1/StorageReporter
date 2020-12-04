@@ -8,6 +8,8 @@ type Email struct {
 
 type Repository interface {
 	AddArray(a devices.Device) error
+	ListArrays() ([]devices.Device, error)
+	ListArraysNames() ([]string, error)
 	AddEmailSettings(param []string) error
 	GetEmail() (*Email, error)
 	Close()

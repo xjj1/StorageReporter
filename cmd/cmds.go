@@ -29,6 +29,7 @@ func NewApp(r repository.Repository) *App {
 	c.AddCommand(newEmailCmd(r))
 	c.AddCommand(newListCmd(r))
 	c.AddCommand(newAddArrayCmd(r))
+	c.AddCommand(supportedArrays)
 	return &App{c}
 }
 
@@ -48,10 +49,16 @@ Configure email settings :
 		
 Run "%s makerep" to generate and send the report.
 
-Run "%s makerep_noxls" to generate and send the report.
-
 Run "%s help [command]" for more details
 
+		`, selfName, selfName, selfName, selfName),
+		SilenceUsage:  true,
+		SilenceErrors: true,
+	}
+	return cmd
+}
+
+var supportedArr = `
 Supported arrays:
 HP 3PAR (via SSH)
 HP MSA (via SSH)
@@ -59,12 +66,13 @@ HP LeftHand / StoreVirtual (must have cliq installed and in the system PATH)
 HP Nimble (via SSH)
 PureStorage (via SSH)
 Hitachi VSP (must have horcm/horcmstart/raidcom installed, configured and in the system PATH)
+`
 
-		`, selfName, selfName, selfName, selfName, selfName),
-		SilenceUsage:  true,
-		SilenceErrors: true,
-	}
-	return cmd
+var supportedArrays = &cobra.Command{
+	Use:     "sup",
+	Short:   "List supported arrays",
+	Long:    supportedArr,
+	Example: supportedArr,
 }
 
 func newEmailCmd(r repository.Repository) *cobra.Command {
@@ -101,16 +109,20 @@ func newListCmd(r repository.Repository) *cobra.Command {
 		Short: "list configuration",
 		Long:  `This command lists the configuration`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			// a, err := r.ListArraysNames() //dbops.go
-			// if err != nil {
-			// 	return err
-			// }
-			// fmt.Println(strings.Join(a, "\n"))
+			a, err := r.ListArraysNames() //dbops.go
+			if err != nil {
+				return err
+			}
+			if len(a) > 0 {
+				fmt.Println("Arrays:")
+				fmt.Println(strings.Join(a, "\n"))
+			} else {
+				log.Println("No arrays configured")
+			}
 			m, err := r.GetEmail()
 			if err != nil {
 				return err
 			}
-
 			fmt.Println("mail configration :", m.Rcptto, m.Mailserver, m.Mailfrom, m.Subject)
 			return nil
 		},

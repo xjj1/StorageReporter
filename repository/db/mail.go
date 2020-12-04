@@ -58,12 +58,16 @@ func (r *repo) GetEmail() (*repository.Email, error) {
 	defer rows.Close()
 
 	var m repository.Email
+
 	for rows.Next() {
 		_ = rows.Scan(&m.Rcptto, &m.Mailserver, &m.Mailfrom, &m.Subject, &m.Username, &m.Password)
 	}
 	err = rows.Err()
 	if err != nil {
 		return nil, errors.Wrap(err, "select email scan result")
+	}
+	if m.Rcptto == "" {
+		return nil, errors.New("No email configured")
 	}
 	return &m, nil
 }
