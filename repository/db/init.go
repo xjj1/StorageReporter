@@ -28,8 +28,8 @@ func InitSQLiteRepo() (*repo, error) {
 	// FriendlyName = if fqdn is not configured we need some kind of readable name
 	sqlStmt := `create table if not exists Arrays (
 		ArrayType integer,
-		Cluster varchar(1024),
-		Name varchar(1024),
+		Cluster varchar(1024) unique,
+		Name varchar(1024) unique,
 		FriendlyName varchar(1024),
 		Username varchar(1024),
 		Password varchar(1024)
