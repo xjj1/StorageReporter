@@ -5,9 +5,10 @@ import (
 
 	_ "github.com/mutecomm/go-sqlcipher/v4"
 	"github.com/pkg/errors"
+	"github.com/xjj1/StorageReporter/repository"
 )
 
-func (r *Repository) AddEmailSettings(param []string) error {
+func (r *repo) AddEmailSettings(param []string) error {
 	if len(param) < 2 {
 		return errors.New("Please specify at least recipient and mailserver!")
 	}
@@ -49,18 +50,14 @@ func (r *Repository) AddEmailSettings(param []string) error {
 	return nil
 }
 
-type Email struct {
-	Rcptto, Mailserver, Mailfrom, Subject, Username, Password string
-}
-
-func (r *Repository) GetEmail() (*Email, error) {
+func (r *repo) GetEmail() (*repository.Email, error) {
 	rows, err := r.db.Query("select rcptto,mailserver,mailfrom,subject,username,password from email")
 	if err != nil {
 		return nil, errors.Wrap(err, "select email")
 	}
 	defer rows.Close()
 
-	var m Email
+	var m repository.Email
 	for rows.Next() {
 		_ = rows.Scan(&m.Rcptto, &m.Mailserver, &m.Mailfrom, &m.Subject, &m.Username, &m.Password)
 	}

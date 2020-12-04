@@ -8,9 +8,13 @@ import (
 	"github.com/pkg/errors"
 )
 
+type repo struct {
+	db *sql.DB
+}
+
 const fname = "data.db"
 
-func InitSQLiteRepo() (*Repository, error) {
+func InitSQLiteRepo() (*repo, error) {
 	var err error
 	key := "2DD29CA851E7B56E4697B0E1F08507293D761A05CE4D1B628663F411A8086D99"
 	dbname := fmt.Sprintf("%s?_pragma_key=x'%s'&_pragma_cipher_page_size=4096", fname, key)
@@ -64,7 +68,11 @@ func InitSQLiteRepo() (*Repository, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("%q: %s\n", err, sqlStmt))
 	}
-	return &Repository{
+	return &repo{
 		dbConn,
 	}, nil
+}
+
+func (r *repo) Close() {
+	r.db.Close()
 }

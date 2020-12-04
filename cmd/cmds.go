@@ -8,7 +8,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	"github.com/xjj1/StorageReporter/db"
+	"github.com/xjj1/StorageReporter/repository"
 )
 
 var selfName string
@@ -21,7 +21,7 @@ func (a *App) Execute() error {
 	return a.c.Execute()
 }
 
-func NewApp(r *db.Repository) *App {
+func NewApp(r repository.Repository) *App {
 	selfName = filepath.Base(os.Args[0])
 	c := newRootCmd()
 	c.AddCommand(newEmailCmd(r))
@@ -67,7 +67,7 @@ Hitachi VSP (must have horcm/horcmstart/raidcom installed, configured and in the
 	return cmd
 }
 
-func newEmailCmd(r *db.Repository) *cobra.Command {
+func newEmailCmd(r repository.Repository) *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "email",
 		Short: "Configure email settings",
@@ -95,7 +95,7 @@ func newEmailCmd(r *db.Repository) *cobra.Command {
 	return cmd
 }
 
-func newListCmd(r *db.Repository) *cobra.Command {
+func newListCmd(r repository.Repository) *cobra.Command {
 	var listCmd = &cobra.Command{
 		Use:   "list",
 		Short: "list configuration",

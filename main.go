@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/xjj1/StorageReporter/cmd"
-	"github.com/xjj1/StorageReporter/db"
+	"github.com/xjj1/StorageReporter/repository/db"
 )
 
 // GBsize could be 1000
