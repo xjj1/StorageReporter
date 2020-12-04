@@ -8,13 +8,12 @@ import (
 )
 
 func AutoDetect(a devices.Device) (devices.DeviceType, error) {
-	for _, t := range []devices.DeviceType{devices.HP3PAR, devices.HPMSA, devices.HPNIMBLE, devices.PURESTORAGE} {
-		a.Type = t
+	for i := devices.HP3PAR; i <= devices.PURESTORAGE; i++ {
+		a.Type = i
 		_, err := connector.Connect(a)
 		if err == nil {
-			return t, nil
+			return i, nil
 		}
 	}
-
 	return devices.UNKNOWN, errors.New("Can't connect / unsupported device")
 }
