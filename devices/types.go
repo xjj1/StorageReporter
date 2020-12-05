@@ -6,10 +6,10 @@ const (
 	UNKNOWN DeviceType = iota
 	HP3PAR
 	HPMSA
-	HPLH
-	HDS
 	HPNIMBLE
 	PURESTORAGE
+	// HPLH
+	// HDS
 )
 
 type Device struct {

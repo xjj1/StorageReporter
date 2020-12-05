@@ -11,15 +11,13 @@ func _() {
 	_ = x[UNKNOWN-0]
 	_ = x[HP3PAR-1]
 	_ = x[HPMSA-2]
-	_ = x[HPLH-3]
-	_ = x[HDS-4]
-	_ = x[HPNIMBLE-5]
-	_ = x[PURESTORAGE-6]
+	_ = x[HPNIMBLE-3]
+	_ = x[PURESTORAGE-4]
 }
 
-const _DeviceType_name = "UNKNOWNHP3PARHPMSAHPLHHDSHPNIMBLEPURESTORAGE"
+const _DeviceType_name = "UNKNOWNHP3PARHPMSAHPNIMBLEPURESTORAGE"
 
-var _DeviceType_index = [...]uint8{0, 7, 13, 18, 22, 25, 33, 44}
+var _DeviceType_index = [...]uint8{0, 7, 13, 18, 26, 37}
 
 func (i DeviceType) String() string {
 	if i < 0 || i >= DeviceType(len(_DeviceType_index)-1) {

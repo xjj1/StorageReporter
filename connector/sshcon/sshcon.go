@@ -7,7 +7,7 @@ import (
 	"time"
 
 	// we need this "hacked" ssh
-	//in order to connect to Nimbles
+	// in order to connect to Nimbles
 	"github.com/bored-engineer/ssh"
 	"github.com/xjj1/StorageReporter/devices"
 )
