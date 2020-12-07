@@ -15,6 +15,7 @@ func (r *repo) AddArray(a devices.Device) error {
 		return errors.New("Cannot autodetect / unknown array")
 	}
 	log.Println("Detected", a.Type.String())
+
 	_, err = r.db.Exec(`insert into Arrays(
 		ArrayType,
 		Cluster,
