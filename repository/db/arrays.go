@@ -4,19 +4,11 @@ import (
 	"log"
 
 	"github.com/pkg/errors"
-	"github.com/xjj1/StorageReporter/arrays"
-	"github.com/xjj1/StorageReporter/connector/sshcon"
 	"github.com/xjj1/StorageReporter/devices"
 )
 
 func (r *repo) AddArray(a devices.Device) error {
-	err := arrays.AutoDetect(sshcon.NewSSH(), &a)
-	if err != nil {
-		return errors.New("Cannot autodetect / unknown array")
-	}
-	log.Println("Detected", a.Type.String())
-
-	_, err = r.db.Exec(`insert into Arrays(
+	_, err := r.db.Exec(`insert into Arrays(
 		ArrayType,
 		Cluster,
 		Name,
