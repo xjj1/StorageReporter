@@ -74,7 +74,7 @@ func (c *MySSH) Connect(a *devices.Device) error {
 				}),
 			},
 			HostKeyCallback: ssh.InsecureIgnoreHostKey(),
-			Timeout:         5 * time.Minute,
+			Timeout:         1 * time.Minute,
 			Config:          cfg,
 		}
 	} else {
@@ -84,7 +84,7 @@ func (c *MySSH) Connect(a *devices.Device) error {
 				ssh.Password(a.Password),
 			},
 			HostKeyCallback: ssh.InsecureIgnoreHostKey(),
-			Timeout:         5 * time.Minute,
+			Timeout:         1 * time.Minute,
 			Config:          cfg,
 		}
 	}
