@@ -14,8 +14,8 @@ import (
 )
 
 type MySSH struct {
-	*ssh.Client
-	Name string
+	Client *ssh.Client
+	Name   string
 }
 
 // func NewSSH(a *devices.Device) (MySSH, error) {
@@ -88,22 +88,22 @@ func (c *MySSH) Connect(a *devices.Device) error {
 			Config:          cfg,
 		}
 	}
-
-	client, err := ssh.Dial("tcp", arr_ip, config)
+	var err error
+	c.Client, err = ssh.Dial("tcp", arr_ip, config)
 	if err != nil {
 		log.Printf("Error connecting to %s : %v", a.Name, err)
 		return err
 	}
-
-	c = &MySSH{client, a.Name}
-
+	log.Println("connected")
+	c.Name = a.Name
+	//log.Println(c)
 	return nil
 }
 
 func (c *MySSH) ExecCmd(cmd string) (string, error) {
 	var session *ssh.Session
 	var b bytes.Buffer
-	session, err := c.NewSession()
+	session, err := c.Client.NewSession()
 	if err != nil {
 		//log.Println("Failed to create session: " + err.Error())
 		return "", errors.Wrap(err, "Session:")

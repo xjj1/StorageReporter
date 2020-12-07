@@ -10,14 +10,15 @@ import (
 )
 
 func AutoDetect(c connector.Connector, a *devices.Device) error {
+	var err error
+	if err = c.Connect(a); err == nil {
 
-	if err := c.Connect(a); err == nil {
 		// if err != nil {
 		// 	return errors.New("AutoDetect:")
 		// }
 
 		var res string
-
+		//log.Println(">>", c)
 		// check if 3PAR :
 		res, err := c.ExecCmd("showversion")
 		if err == nil && strings.Contains(res, "Release version") {
@@ -30,6 +31,7 @@ func AutoDetect(c connector.Connector, a *devices.Device) error {
 		res, err = c.ExecCmd("show version")
 		if err == nil && strings.Contains(res, "Controller") {
 			a.Type = devices.HPMSA
+			log.Println("Detected MSA")
 			return nil
 		}
 
@@ -44,12 +46,13 @@ func AutoDetect(c connector.Connector, a *devices.Device) error {
 
 		c.Close()
 	}
+
 	// check if Nimble
 	tmpType := a.Type // save the original type // should be devices.UNKNOWN
 	// force it to use the Nimble ssh
 	a.Type = devices.HPNIMBLE
 
-	err := c.Connect(a)
+	err = c.Connect(a)
 	if err != nil {
 		a.Type = tmpType
 		return errors.Wrap(err, "Checking if Nimble")
