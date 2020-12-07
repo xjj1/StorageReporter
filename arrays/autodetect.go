@@ -11,15 +11,15 @@ import (
 
 func AutoDetect(c connector.Connector, a *devices.Device) error {
 
-	err := c.Connect(a)
-	if err != nil {
-		return errors.New("AutoDetect:")
-	}
+	c.Connect(a)
+	// if err != nil {
+	// 	return errors.New("AutoDetect:")
+	// }
 
 	var res string
 
 	// check if 3PAR :
-	res, err = c.ExecCmd("showversion")
+	res, err := c.ExecCmd("showversion")
 	if err == nil && strings.Contains(res, "Release version") {
 		a.Type = devices.HP3PAR
 		log.Println("Detected 3PAR")

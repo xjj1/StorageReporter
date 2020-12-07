@@ -9,6 +9,7 @@ import (
 	// we need this "hacked" ssh
 	// in order to connect to Nimbles
 	"github.com/bored-engineer/ssh"
+	"github.com/pkg/errors"
 	"github.com/xjj1/StorageReporter/devices"
 )
 
@@ -99,13 +100,13 @@ func (c *MySSH) Connect(a *devices.Device) error {
 	return nil
 }
 
-func (c MySSH) ExecCmd(cmd string) (string, error) {
+func (c *MySSH) ExecCmd(cmd string) (string, error) {
 	var session *ssh.Session
 	var b bytes.Buffer
 	session, err := c.NewSession()
 	if err != nil {
-		log.Println("Failed to create session: " + err.Error())
-		return "", err
+		//log.Println("Failed to create session: " + err.Error())
+		return "", errors.Wrap(err, "Session:")
 	}
 	defer session.Close()
 	session.Stdout = &b
@@ -117,7 +118,7 @@ func (c MySSH) ExecCmd(cmd string) (string, error) {
 	}
 }
 
-func (c MySSH) Close() {
+func (c *MySSH) Close() {
 	c.Client.Close()
 }
 
