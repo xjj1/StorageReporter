@@ -17,34 +17,38 @@ type MySSH struct {
 	Name string
 }
 
-func NewSSH(a *devices.Device) (MySSH, error) {
-	log.Printf("Connecting to %s", a.Name)
-	arr_ip := fmt.Sprintf("%s:22", a.Name)
-	cfg := ssh.Config{}
-	cfg.SetDefaults()
-	cfg.KeyExchanges = append(cfg.KeyExchanges,
-		"diffie-hellman-group-exchange-sha256",
-		"diffie-hellman-group-exchange-sha1",
-	)
-	config := &ssh.ClientConfig{
-		User: a.Username,
-		Auth: []ssh.AuthMethod{
-			ssh.Password(a.Password),
-		},
-		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
-		Timeout:         5 * time.Minute,
-		Config:          cfg,
-	}
-	client, err := ssh.Dial("tcp", arr_ip, config)
-	if err != nil {
-		log.Printf("Error connecting to %s : %v", a.Name, err)
-		return MySSH{}, err
-	}
-	return MySSH{client, a.Name}, nil
-}
+// func NewSSH(a *devices.Device) (MySSH, error) {
+// 	log.Printf("Connecting to %s", a.Name)
+// 	arr_ip := fmt.Sprintf("%s:22", a.Name)
+// 	cfg := ssh.Config{}
+// 	cfg.SetDefaults()
+// 	cfg.KeyExchanges = append(cfg.KeyExchanges,
+// 		"diffie-hellman-group-exchange-sha256",
+// 		"diffie-hellman-group-exchange-sha1",
+// 	)
+// 	config := &ssh.ClientConfig{
+// 		User: a.Username,
+// 		Auth: []ssh.AuthMethod{
+// 			ssh.Password(a.Password),
+// 		},
+// 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+// 		Timeout:         5 * time.Minute,
+// 		Config:          cfg,
+// 	}
+// 	client, err := ssh.Dial("tcp", arr_ip, config)
+// 	if err != nil {
+// 		log.Printf("Error connecting to %s : %v", a.Name, err)
+// 		return MySSH{}, err
+// 	}
+// 	return MySSH{client, a.Name}, nil
+// }
 
 // needs question/answer SSH connection to the Nimbles
-func NewSSHNimble(a *devices.Device) (MySSH, error) {
+func NewSSH() *MySSH {
+	return &MySSH{}
+}
+
+func (c *MySSH) Connect(a *devices.Device) error {
 	log.Printf("Connecting to %s", a.Name)
 	arr_ip := fmt.Sprintf("%s:22", a.Name)
 	cfg := ssh.Config{}
@@ -53,28 +57,46 @@ func NewSSHNimble(a *devices.Device) (MySSH, error) {
 		"diffie-hellman-group-exchange-sha256",
 		"diffie-hellman-group-exchange-sha1",
 	)
-	config := &ssh.ClientConfig{
-		User: a.Username,
-		Auth: []ssh.AuthMethod{
-			ssh.KeyboardInteractive(func(user, instruction string, questions []string, echos []bool) ([]string, error) {
-				// Just send the password back for all questions
-				answers := make([]string, len(questions))
-				for i := range answers {
-					answers[i] = a.Password // replace this
-				}
-				return answers, nil
-			}),
-		},
-		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
-		Timeout:         5 * time.Minute,
-		Config:          cfg,
+	var config *ssh.ClientConfig
+
+	if a.Type == devices.HPNIMBLE {
+		config = &ssh.ClientConfig{
+			User: a.Username,
+			Auth: []ssh.AuthMethod{
+				ssh.KeyboardInteractive(func(user, instruction string, questions []string, echos []bool) ([]string, error) {
+					// Just send the password back for all questions
+					answers := make([]string, len(questions))
+					for i := range answers {
+						answers[i] = a.Password
+					}
+					return answers, nil
+				}),
+			},
+			HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+			Timeout:         5 * time.Minute,
+			Config:          cfg,
+		}
+	} else {
+		config = &ssh.ClientConfig{
+			User: a.Username,
+			Auth: []ssh.AuthMethod{
+				ssh.Password(a.Password),
+			},
+			HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+			Timeout:         5 * time.Minute,
+			Config:          cfg,
+		}
 	}
+
 	client, err := ssh.Dial("tcp", arr_ip, config)
 	if err != nil {
 		log.Printf("Error connecting to %s : %v", a.Name, err)
-		return MySSH{}, err
+		return err
 	}
-	return MySSH{client, a.Name}, nil
+
+	c = &MySSH{client, a.Name}
+
+	return nil
 }
 
 func (c MySSH) ExecCmd(cmd string) (string, error) {
@@ -94,3 +116,9 @@ func (c MySSH) ExecCmd(cmd string) (string, error) {
 		return b.String(), nil
 	}
 }
+
+func (c MySSH) Close() {
+	c.Client.Close()
+}
+
+//func Detect3PAR() {}

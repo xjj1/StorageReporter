@@ -8,20 +8,15 @@ import (
 )
 
 type Connector interface {
+	Connect(a *devices.Device) error
 	ExecCmd(string) (string, error)
+	Close()
 }
 
-func Connect(a devices.Device) (Connector, error) {
-	switch a.Type {
-	case devices.HP3PAR:
-		return sshcon.NewSSH(&a)
-	case devices.HPNIMBLE:
-		return sshcon.NewSSHNimble(&a)
-	case devices.HPMSA:
-		return sshcon.NewSSH(&a)
-	case devices.PURESTORAGE:
-		return sshcon.NewSSH(&a)
-	default:
-		return nil, errors.New("Can't connect, unknown device type")
+func Connect(a devices.Device) error {
+	if a.Type >= devices.UNKNOWN && a.Type <= devices.PURESTORAGE {
+		return sshcon.NewSSH().Connect(&a)
 	}
+
+	return errors.New("Can't connect, unknown device type")
 }

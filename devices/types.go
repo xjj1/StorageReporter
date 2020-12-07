@@ -8,8 +8,6 @@ const (
 	HPMSA
 	HPNIMBLE
 	PURESTORAGE
-	// HPLH
-	// HDS
 )
 
 type Device struct {
@@ -42,6 +40,7 @@ type FreeSpaceData struct {
 	Oversubscription float64
 }
 
+/*
 type HistEntry struct {
 	datetime       string
 	array          string
@@ -52,7 +51,7 @@ type HistEntry struct {
 	used_perc      string
 	snapshots      string
 	presented_size string
-}
+}*/
 
 type DeviceData struct {
 	DeviceName      string
